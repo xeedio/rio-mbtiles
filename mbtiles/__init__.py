@@ -14,12 +14,13 @@ __version__ = '1.3.0'
 base_kwds = None
 src = None
 
+png_header = bytearray([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+jpeg_header = bytearray([0xff, 0xd8, 0xff, 0xe0])
 
 def init_worker(path, profile):
     global base_kwds, src
     base_kwds = profile.copy()
     src = rasterio.open(path)
-
 
 def process_tile(tile):
     """Process a single MBTiles tile
@@ -57,6 +58,14 @@ def process_tile(tile):
 
     # Workaround for https://bugs.python.org/issue23349.
     if sys.version_info[0] == 2 and sys.version_info[2] < 10:
-        data[:] = data[-1:] + data[:-1]
+        # Check for backported bug fix before re-ordering
+	if kwds['driver'] == 'PNG' and data[0:8] == png_header:
+            # Properly constructed PNG, no need to re-order bytes
+            pass
+	elif kwds['driver'] == 'JPEG' and data[0:4] == jpeg_header:
+            # Properly constructed JPEG, no need to re-order bytes
+            pass
+	else:
+            data[:] = data[-1:] + data[:-1]
 
     return tile, data
