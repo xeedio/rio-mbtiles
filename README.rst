@@ -41,7 +41,8 @@ Usage
       --description TEXT      MBTiles dataset description.
       --overlay               Export as an overlay (the default).
       --baselayer             Export as a base layer.
-      --format [JPEG|PNG]     Tile image format.
+      --format [JPEG|PNG]     Tile image format. PNG format required for nodata
+                              values to display as transparent.
       --zoom-levels MIN..MAX  A min..max range of export zoom levels. The default
                               zoom level is the one at which the dataset is
                               contained within a single tile.
@@ -50,6 +51,9 @@ Usage
       -j INTEGER              Number of worker processes (default: 3).
       --src-nodata FLOAT      Manually override source nodata
       --dst-nodata FLOAT      Manually override destination nodata
+      --resampling            Resampling method to use. Options within
+                              rasterio.enums.Resampling are supported.
+                              (default: nearest)
       --version               Show the version and exit.
       --help                  Show this message and exit.
 
